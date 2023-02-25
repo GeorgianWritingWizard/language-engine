@@ -39,7 +39,7 @@ cf = {
 # dataset = load_dataset('ZurabDz/processed_dataset')
 dataset = datasets.load_from_disk(
     '/home/penguin/GeorgianWritingWizard/data/processed_data')
-splitted = dataset.train_test_split(test_size=0.1, seed=42)
+splitted = dataset.train_test_split(test_size=0.01, seed=42)
 
 config = AlbertConfig(**cf)
 tokenizer = AutoTokenizer.from_pretrained('ZurabDz/GeoSentencePieceBPE')
@@ -113,7 +113,7 @@ trainer = Trainer(
     tokenizer=tokenizer,
     data_collator=data_collator,
     compute_metrics=compute_metrics,
-    preprocess_logits_for_metrics=preprocess_logits_for_metrics
+    preprocess_logits_for_metrics=preprocess_logits_for_metrics,
 )
 
 trainer.train()
