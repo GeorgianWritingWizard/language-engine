@@ -90,8 +90,8 @@ training_args = TrainingArguments(
     do_eval=True,
     do_predict=True,
     evaluation_strategy='steps',
-    per_device_train_batch_size=16,
-    per_device_eval_batch_size=16,
+    per_device_train_batch_size=24,
+    per_device_eval_batch_size=24,
     gradient_accumulation_steps=8,
     eval_accumulation_steps=8,
     save_strategy='steps',
@@ -102,6 +102,7 @@ training_args = TrainingArguments(
     # no_cuda=True,
     fp16=True,
     dataloader_num_workers=4,
+    torch_compile=True
 )
 
 
