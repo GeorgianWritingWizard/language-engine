@@ -1,7 +1,5 @@
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 from tokenizers import Tokenizer, models, normalizers, pre_tokenizers, decoders, trainers, Regex, processors
-from datasets import load_dataset
-import hydra
 
 
 def _download_tokenizer(tokenizer_path_or_name, seq_length, cache_dir=None):
