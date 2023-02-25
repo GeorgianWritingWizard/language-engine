@@ -1,3 +1,6 @@
+"""
+Traning almost any tokenizer
+"""
 from datasets import load_dataset
 import hydra
 from language_engine.tokenizer.train_tokenizer import construct_tokenizer
