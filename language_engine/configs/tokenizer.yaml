@@ -1,0 +1,14 @@
+# Preprocessing
+normalizer:
+  force_lowercase: True
+  strip_accents: True
+  force_english_keyboard: False
+  whitespace_escape: False
+tokenizer: SentencePieceBPE
+vocab_size: 32768
+
+# Dataset Formation
+seq_length: 128
+include_cls_token_in_corpus: False
+include_sep_token_in_corpus: True
+use_type_ids: False
