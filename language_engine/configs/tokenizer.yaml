@@ -13,3 +13,4 @@ seq_length: 128
 include_cls_token_in_corpus: False
 include_sep_token_in_corpus: True
 use_type_ids: False
+name: geo_tokenizer
