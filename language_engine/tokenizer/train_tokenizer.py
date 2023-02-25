@@ -213,17 +213,3 @@ def construct_tokenizer(raw_datasets, cfg_data, path, known_tokens=[]):
         tokenizer = _construct_tokenizer(raw_datasets, cfg_data, known_tokens)
     tokenizer.name = f"{cfg_data.tokenizer}-{cfg_data.name}-{cfg_data.vocab_size}.json"
     return tokenizer
-
-
-data = load_dataset('text', data_files=[
-                    '/home/penguin/GeorgianWritingWizard/data/data.txt'])
-
-
-@hydra.main(config_path='/home/penguin/GeorgianWritingWizard/cramming/cramming/config/data', config_name="the-pile", version_base="1.1")
-def test(cfg):
-    print(cfg)
-    tok = construct_tokenizer(data['train'], cfg, None)
-    tok.save_pretrained('tok')
-
-
-args = test()
