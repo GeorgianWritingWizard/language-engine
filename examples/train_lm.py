@@ -7,6 +7,7 @@ from transformers import DataCollatorForLanguageModeling, AlbertConfig, HfArgume
 parser = HfArgumentParser(TrainingArguments)
 
 training_args = parser.parse_args_into_dataclasses()
+training_args = training_args[0]
 
 # TODO: this is dumb temporary
 cf = {
@@ -83,7 +84,7 @@ def preprocess_logits_for_metrics(logits, labels):
 
 
 training_args = TrainingArguments(
-    output_dir='./out',
+    output_dir=training_args.output_dir,
     do_train=True,
     do_eval=True,
     do_predict=True,
