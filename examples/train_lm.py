@@ -45,10 +45,13 @@ dataset = load_dataset('ZurabDz/tokenized_geo_data')
 #     '/home/penguin/GeorgianWritingWizard/data/processed_data')
 splitted = dataset['train'].train_test_split(test_size=0.01, seed=42)
 
-config = AlbertConfig(**cf)
-tokenizer = AutoTokenizer.from_pretrained('ZurabDz/GeoSentencePieceBPE')
-config.vocab_size = tokenizer.vocab_size
-model = AutoModelForMaskedLM.from_config(config)
+# config = AlbertConfig(**cf)
+# tokenizer = AutoTokenizer.from_pretrained('ZurabDz/GeoSentencePieceBPE')
+# config.vocab_size = tokenizer.vocab_size
+# model = AutoModelForMaskedLM.from_config(config)
+
+tokenizer = AutoTokenizer.from_pretrained('ZurabDz/albert-geo')
+model = AutoModelForMaskedLM.from_pretrained('ZurabDz/albert-geo')
 
 
 mlm_probability = 0.15
@@ -120,4 +123,4 @@ trainer = Trainer(
     preprocess_logits_for_metrics=preprocess_logits_for_metrics,
 )
 
-trainer.train()
+trainer.train(resume_from_checkpoint=True)
