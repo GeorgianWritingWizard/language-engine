@@ -123,4 +123,4 @@ trainer = Trainer(
     preprocess_logits_for_metrics=preprocess_logits_for_metrics,
 )
 
-trainer.train(resume_from_checkpoint=True)
+trainer.train()
