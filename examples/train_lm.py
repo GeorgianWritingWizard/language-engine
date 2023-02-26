@@ -115,7 +115,8 @@ training_args = TrainingArguments(
     fp16=True,
     dataloader_num_workers=training_args.dataloader_num_workers,
     torch_compile=training_args.torch_compile,
-    learning_rate=training_args.learning_rate
+    learning_rate=training_args.learning_rate,
+    warmup_ratio=training_args.warmup_ratio,
 )
 
 
