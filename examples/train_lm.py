@@ -2,8 +2,11 @@ import evaluate
 from datasets import load_dataset
 import datasets
 from transformers import AutoModelForMaskedLM, AutoTokenizer, Trainer, TrainingArguments
-from transformers import DataCollatorForLanguageModeling, AlbertConfig
+from transformers import DataCollatorForLanguageModeling, AlbertConfig, HfArgumentParser
 
+parser = HfArgumentParser(TrainingArguments)
+
+training_args = parser.parse_args_into_dataclasses()
 
 # TODO: this is dumb temporary
 cf = {
@@ -36,9 +39,9 @@ cf = {
   "vocab_size": 30000
 }
 
-# dataset = load_dataset('ZurabDz/processed_dataset')
-dataset = datasets.load_from_disk(
-    '/home/penguin/GeorgianWritingWizard/data/processed_data')
+dataset = load_dataset('ZurabDz/processed_dataset')
+# dataset = datasets.load_from_disk(
+#     '/home/penguin/GeorgianWritingWizard/data/processed_data')
 splitted = dataset.train_test_split(test_size=0.01, seed=42)
 
 config = AlbertConfig(**cf)
@@ -47,14 +50,9 @@ config.vocab_size = tokenizer.vocab_size
 model = AutoModelForMaskedLM.from_config(config)
 
 
-pad_to_max_length = True
-max_seq_length = 128
 mlm_probability = 0.15
 pad_to_multiple_of_8 = False
 
-column_names = list(splitted["train"].features)
-text_column_name = "text" if "text" in column_names else column_names[0]
-padding = "max_length" if pad_to_max_length else False
 metric = evaluate.load("accuracy")
 
 data_collator = DataCollatorForLanguageModeling(
@@ -89,20 +87,20 @@ training_args = TrainingArguments(
     do_train=True,
     do_eval=True,
     do_predict=True,
-    evaluation_strategy='steps',
-    per_device_train_batch_size=24,
-    per_device_eval_batch_size=24,
-    gradient_accumulation_steps=8,
-    eval_accumulation_steps=8,
-    save_strategy='steps',
+    evaluation_strategy=training_args.evaluation_strategy,
+    per_device_train_batch_size=training_args.per_device_train_batch_size,
+    per_device_eval_batch_size=training_args.per_device_eval_batch_size,
+    gradient_accumulation_steps=training_args.gradient_accumulation_steps,
+    eval_accumulation_steps=training_args.eval_accumulation_steps,
+    save_strategy=training_args.save_strategy,
     save_total_limit=4,
-    save_steps=50,
-    eval_steps=50,
-    logging_steps=50,
+    save_steps=training_args.save_steps,
+    eval_steps=training_args.eval_steps,
+    logging_steps=training_args.logging_steps,
     # no_cuda=True,
     fp16=True,
-    dataloader_num_workers=4,
-    torch_compile=True
+    dataloader_num_workers=training_args.dataloader_num_workers,
+    torch_compile=training_args.torch_compile
 )
 
 
