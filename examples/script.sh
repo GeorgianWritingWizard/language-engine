@@ -6,4 +6,5 @@ python  train_lm.py --evaluation_strategy steps --per_device_train_batch_size 24
          --dataset_name ZurabDz/geo_small_corpus_dedublicated_trash_off_tokenized \
          --test_size 0.05 --tokenizer_name ZurabDz/GeoSentencePieceBPE_32768_v2 \
          --model_name albert --from_scratch --fp16 True \
-         --push_to_hub True --hub_model_id ZurabDz/albert-geo --hub_token <mytoken>
+         --push_to_hub True --hub_model_id ZurabDz/albert-geo --hub_token <mytoken> \
+         --num_train_epochs 64

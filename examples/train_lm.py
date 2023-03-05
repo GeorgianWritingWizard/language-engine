@@ -32,7 +32,7 @@ splitted = dataset['train'].train_test_split(test_size=dataset_args.test_size, s
 tokenizer = AutoTokenizer.from_pretrained(tokenizer_args.tokenizer_name, model_max_length=tokenizer_args.model_max_length)
 
 if model_args.from_scratch:
-    config = AlbertConfig.from_pretrained('albert-base-v2')
+    config = AlbertConfig.from_pretrained(model_args.model_name)
     model = AutoModelForMaskedLM.from_config(config=config)
 else:
      model = AutoModelForMaskedLM.from_pretrained(model_args.model_name)
@@ -95,6 +95,7 @@ training_args = TrainingArguments(
     torch_compile=training_args.torch_compile,
     learning_rate=training_args.learning_rate,
     warmup_ratio=training_args.warmup_ratio,
+    num_train_epochs=training_args.num_train_epochs
 )
 
 
