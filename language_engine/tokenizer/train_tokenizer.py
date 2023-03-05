@@ -27,15 +27,26 @@ def load_tokenizer(tokenizer_path_or_name, seq_length=512, vocab_size=None, cach
     return tokenizer
 
 
+# def _get_sane_token_args():
+#     return dict(
+#         pad_token="<pad>",
+#         bos_token="<s>",
+#         eos_token="</s>",
+#         unk_token="<unk>",
+#         cls_token="<cls>",
+#         sep_token="<sep>",
+#         mask_token="<mask>",
+#     )
+
 def _get_sane_token_args():
     return dict(
         pad_token="<pad>",
         bos_token="<s>",
         eos_token="</s>",
         unk_token="<unk>",
-        cls_token="<cls>",
-        sep_token="<sep>",
-        mask_token="<mask>",
+        cls_token="[CLS]",
+        sep_token="[SEP]",
+        mask_token="[MASK]",
     )
 
 
