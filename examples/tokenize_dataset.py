@@ -10,8 +10,9 @@ import os
 
 NUM_THREADS = os.cpu_count()
 
-tokenizer = PreTrainedTokenizerFast.from_pretrained('ZurabDz/GeoSentencePieceBPE')
-dataset = load_dataset('ZurabDz/geo_small_corpus')
+#TODO :Make This script
+tokenizer = PreTrainedTokenizerFast.from_pretrained('ZurabDz/GeoSentencePieceBPE_32768_v2')
+dataset = load_dataset('ZurabDz/geo_small_corpus_dedublicated_trash_off')
 
 tokenized_dataset = huggingface_preprocessing(dataset['train'], tokenizer, NUM_THREADS)
 tokenized_dataset.save_to_disk('./processed_data')
