@@ -2,7 +2,7 @@ import os
 from itertools import chain
 
 # TODO: wrapp parameters in hydra?
-def huggingface_preprocessing(raw_dataset, tokenizer, num_threads=4):
+def huggingface_preprocessing(raw_dataset, tokenizer, num_threads=8, max_seq_length=128):
     """Dataset preprocessing and tokenization.
 
     This is basically the default HF routine from
@@ -13,7 +13,7 @@ def huggingface_preprocessing(raw_dataset, tokenizer, num_threads=4):
     column_names = getattr(raw_dataset, "column_names", "text")
     text_column_name = "text" if "text" in column_names else column_names[0]
 
-    max_seq_length = tokenizer.model_max_length
+    # TODO: this is dumb
     map_setup = dict(
         batched=True,
         batch_size=1024,
@@ -38,8 +38,7 @@ def huggingface_preprocessing(raw_dataset, tokenizer, num_threads=4):
         tokenize_function, remove_columns=column_names, desc="Running tokenizer on every text in dataset", **map_setup
     )
 
-    # TODO: this is dumb
-    tokenizer.model_max_length = 128
+
 
     # Main data processing function that will concatenate all texts from our dataset and generate chunks of
     # max_seq_length.
