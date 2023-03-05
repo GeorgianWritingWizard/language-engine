@@ -1,76 +1,52 @@
 import evaluate
 from datasets import load_dataset
-import datasets
 from transformers import AutoModelForMaskedLM, AutoTokenizer, Trainer, TrainingArguments
 from transformers import DataCollatorForLanguageModeling, AlbertConfig, HfArgumentParser
+from dataclasses import dataclass, field
 
-parser = HfArgumentParser(TrainingArguments)
+@dataclass
+class DatasetArguments:
+    dataset_name: str 
+    test_size: float = field(default=0.05)
+    dataset_seed: int = field(default=42)
 
-training_args = parser.parse_args_into_dataclasses()
-training_args = training_args[0]
+@dataclass
+class TokenizerArguments:
+    tokenizer_name: str
+    model_max_length: int = field(default=128)
 
-# TODO: this is dumb temporary
-cf = {
-  "architectures": [
-    "AlbertForMaskedLM"
-  ],
-  "attention_probs_dropout_prob": 0,
-  "bos_token_id": 2,
-  "classifier_dropout_prob": 0.1,
-  "down_scale_factor": 1,
-  "embedding_size": 128,
-  "eos_token_id": 3,
-  "gap_size": 0,
-  "hidden_act": "gelu_new",
-  "hidden_dropout_prob": 0,
-  "hidden_size": 768,
-  "initializer_range": 0.02,
-  "inner_group_num": 1,
-  "intermediate_size": 3072,
-  "layer_norm_eps": 1e-12,
-  "max_position_embeddings": 512,
-  "model_type": "albert",
-  "net_structure_type": 0,
-  "num_attention_heads": 12,
-  "num_hidden_groups": 1,
-  "num_hidden_layers": 12,
-  "num_memory_blocks": 0,
-  "pad_token_id": 0,
-  "type_vocab_size": 2,
-  "vocab_size": 30000
-}
+@dataclass
+class ModelArgumnts:
+    model_name: str
+    from_scratch: bool = field(default=True)
+    mlm_probability: float = field(default=0.15)
+    pad_to_multiple_of_8: bool = field(default=False)
 
-dataset = load_dataset('ZurabDz/tokenized_geo_data')
-# dataset = datasets.load_from_disk(
-#     '/home/penguin/GeorgianWritingWizard/data/processed_data')
-splitted = dataset['train'].train_test_split(test_size=0.01, seed=42)
+parser = HfArgumentParser((TrainingArguments, DatasetArguments, TokenizerArguments, ModelArgumnts))
 
-# config = AlbertConfig(**cf)
-# tokenizer = AutoTokenizer.from_pretrained('ZurabDz/GeoSentencePieceBPE')
-tokenizer = AutoTokenizer.from_pretrained('ZurabDz/albert-geo')
-model = AutoModelForMaskedLM.from_pretrained('ZurabDz/albert-geo')
-# config.vocab_size = tokenizer.vocab_size
-# model = AutoModelForMaskedLM.from_config(config)
-# model = AutoModelForMaskedLM.from_pretrained('albert-base-v2')
+training_args, dataset_args, tokenizer_args, model_args = parser.parse_args_into_dataclasses()
+
+dataset = load_dataset(dataset_args.dataset_name)
+splitted = dataset['train'].train_test_split(test_size=dataset_args.test_size, seed=dataset_args.dataset_seed)
+
+tokenizer = AutoTokenizer.from_pretrained(tokenizer_args.tokenizer_name, model_max_length=tokenizer_args.model_max_length)
+
+if model_args.from_scratch:
+    config = AlbertConfig.from_pretrained('albert-base-v2')
+    model = AutoModelForMaskedLM.from_config(config=config)
+else:
+     model = AutoModelForMaskedLM.from_pretrained(model_args.model_name)
 
 # in case token vocab is different
-# embedding_size = model.get_input_embeddings().weight.shape[0]
-# if len(tokenizer) > embedding_size:
-        # model.resize_token_embeddings(len(tokenizer))
-
-# tokenizer = AutoTokenizer.from_pretrained('ZurabDz/albert-geo')
-# model = AutoModelForMaskedLM.from_pretrained('ZurabDz/albert-geo')
-
-
-mlm_probability = 0.15
-pad_to_multiple_of_8 = False
+embedding_size = model.get_input_embeddings().weight.shape[0]
+if len(tokenizer) > embedding_size:
+    model.resize_token_embeddings(len(tokenizer))
 
 metric = evaluate.load("accuracy")
 
 data_collator = DataCollatorForLanguageModeling(
     tokenizer=tokenizer,
-    mlm_probability=mlm_probability,
-    pad_to_multiple_of=8 if pad_to_multiple_of_8 else None,
+    mlm_probability=model_args.mlm_probability
 )
 
 
@@ -114,7 +90,7 @@ training_args = TrainingArguments(
     push_to_hub=training_args.push_to_hub,
     hub_model_id=training_args.hub_model_id,
     hub_token=training_args.hub_token,
-    fp16=True,
+    fp16=training_args.fp16,
     dataloader_num_workers=training_args.dataloader_num_workers,
     torch_compile=training_args.torch_compile,
     learning_rate=training_args.learning_rate,
