@@ -1,7 +1,7 @@
 # Preprocessing
 normalizer:
-  force_lowercase: False
-  strip_accents: False
+  force_lowercase: True
+  strip_accents: True
   force_english_keyboard: False
   whitespace_escape: False
 tokenizer: SentencePieceBPE
