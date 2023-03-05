@@ -27,17 +27,6 @@ def load_tokenizer(tokenizer_path_or_name, seq_length=512, vocab_size=None, cach
     return tokenizer
 
 
-# def _get_sane_token_args():
-#     return dict(
-#         pad_token="<pad>",
-#         bos_token="<s>",
-#         eos_token="</s>",
-#         unk_token="<unk>",
-#         cls_token="<cls>",
-#         sep_token="<sep>",
-#         mask_token="<mask>",
-#     )
-
 def _get_sane_token_args():
     return dict(
         pad_token="<pad>",
@@ -189,20 +178,20 @@ def _construct_tokenizer(raw_datasets, cfg_data, known_tokens=[]):
             f"Tokenizer generation failure. Vocab size of trained tokenizer is {tokenizer.get_vocab_size()}.")
 
     # Postprocess:
-    cls_token_id = tokenizer.token_to_id("<cls>")
-    sep_token_id = tokenizer.token_to_id("<sep>")
+    cls_token_id = tokenizer.token_to_id("[CLS]")
+    sep_token_id = tokenizer.token_to_id("[SEP]")
 
     # Generate template:
     type_id = str(1) if cfg_data.use_type_ids else str(0)
     single_template = "$A"
     if cfg_data.include_cls_token_in_corpus:
-        single_template = "<cls> " + single_template
+        single_template = "[CLS] " + single_template
     if cfg_data.include_sep_token_in_corpus:
-        single_template = single_template + " <sep>"
+        single_template = single_template + " [SEP]"
     tokenizer.post_processor = processors.TemplateProcessing(
         single=single_template,
-        pair=f"<cls>:0 $A:0 <sep>:0 $B:{type_id} <sep>:{type_id}",
-        special_tokens=[("<cls>", cls_token_id), ("<sep>", sep_token_id)],
+        pair=f"[CLS]:0 $A:0 [SEP]:0 $B:{type_id} [SEP]:{type_id}",
+        special_tokens=[("[CLS]", cls_token_id), ("[SEP]", sep_token_id)],
     )
     # Wrap into fast codebase
     wrapped_tokenizer = PreTrainedTokenizerFast(
