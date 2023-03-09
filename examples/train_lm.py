@@ -35,11 +35,13 @@ if model_args.from_scratch:
     config = AlbertConfig.from_pretrained(model_args.model_name)
     model = AutoModelForMaskedLM.from_config(config=config)
 else:
-     model = AutoModelForMaskedLM.from_pretrained(model_args.model_name)
+    print("REUSING WEIGHTS")
+    model = AutoModelForMaskedLM.from_pretrained(model_args.model_name)
 
 # in case token vocab is different
 embedding_size = model.get_input_embeddings().weight.shape[0]
 if len(tokenizer) > embedding_size:
+    print("RESIZING EMBEDDINGS")
     model.resize_token_embeddings(len(tokenizer))
 
 metric = evaluate.load("accuracy")
