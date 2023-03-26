@@ -8,7 +8,7 @@ tokenizer: SentencePieceBPE
 vocab_size: 32768
 
 # Dataset Formation
-dataset_name: ZurabDz/geo_small_corpus_dedublicated_trash_off
+dataset_name: /home/penguin/GeorgianWritingWizard/data/whole_corpus/filter_v2/filtered.txt
 seq_length: 512
 include_cls_token_in_corpus: False
 include_sep_token_in_corpus: True

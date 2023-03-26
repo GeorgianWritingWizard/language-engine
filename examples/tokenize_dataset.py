@@ -11,8 +11,9 @@ import os
 NUM_THREADS = os.cpu_count()
 
 #TODO :Make This script
-tokenizer = AutoTokenizer.from_pretrained('/home/penguin/GeorgianWritingWizard/language_engine/examples/outputs/2023-03-09/22-36-38/tokenizer')
-dataset = load_dataset('text', data_files={'train': ['/home/penguin/GeorgianWritingWizard/data/test_data.txt']})
+tokenizer = AutoTokenizer.from_pretrained(
+    '/home/penguin/GeorgianWritingWizard/language_engine/examples/outputs/2023-03-16/19-34-59/tokenizer')
+dataset = load_dataset('text', data_files={'train': ['/home/penguin/GeorgianWritingWizard/data/whole_corpus/filter_v2/filtered.txt']})
 # dataset = load_dataset('ZurabDz/geo_small_corpus')
 
 tokenized_dataset = huggingface_preprocessing(dataset['train'], tokenizer, NUM_THREADS, max_seq_length=128)
