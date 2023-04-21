@@ -1,0 +1,15 @@
+python train_bart.py \
+    --output_dir="./output_dir" \
+    --config_name="./configs" \
+    --tokenizer_name="/home/penguin/GeorgianWritingWizard/bart_tokenizer" \
+    --dataset_name="ZurabDz/bart_tokenized_data_bpe_byte_level" \
+    --dataset_config_name="unshuffled_deduplicated_no" \
+    --max_seq_length="64" \
+    --per_device_train_batch_size="4" \
+    --per_device_eval_batch_size="4" \
+    --learning_rate="1e-4" \
+    --warmup_steps="2000" \
+    --overwrite_output_dir \
+    --logging_steps="500" \
+    --save_steps="2000" \
+    --eval_steps="2000"
